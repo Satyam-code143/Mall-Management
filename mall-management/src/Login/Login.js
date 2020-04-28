@@ -1,17 +1,23 @@
 import React, {Component} from 'react';
+import { connect } from 'react-redux';
 import './Login.css';
 import axios from 'axios';
 import { withRouter } from 'react-router-dom';
+import SendData from '../Actions/SendData';
+import SendId from '../Actions/SendId';
+
+
+
 
 class Login extends Component{
-
+      
      stat={
-           Username:null,
-           Password:null
+           Username:'',
+           Password:''
      }
 
      onAddHandle=(e)=>{
-     
+           
       this.setState({
          [e.target.id]:e.target.value
 
@@ -20,7 +26,10 @@ class Login extends Component{
 
 
     validateUser=(e)=> {
-           e.preventDefault();
+                    
+      const { dispatch } = this.props; 
+      
+          e.preventDefault();
                 if(this.state.Username != null && this.state.Password!= null){  
                   axios.post('http://localhost/backend-mall-management/Login/Validate.php',this.state)
                   .then(res => {
@@ -31,15 +40,20 @@ class Login extends Component{
                               Name:res.data.Name,
                               Email:res.data.Email
                         }
-                        
+                        console.log(json)
                   if(json.Username ==='admin' || json.Username ==='admin1' || json.Username ==='admin2'){
                   
-                        this.props.history.push({pathname:'/AdminPage',state:json});
+                        this.props.history.push('/AdminPage');
+                        dispatch(SendData(json.Name));
+                        
                         
                   }
                   else{
                         
-                        this.props.history.push({pathname:'/ManagerPage',state:json});
+                        this.props.history.push('/ManagerPage');
+                        dispatch(SendData(json.Name));
+                        dispatch(SendId(json.User_Id));
+                       
                         
                   }
                   }else{
@@ -85,4 +99,4 @@ return(
 
 }
 
-export default withRouter(Login);
+export default connect()(withRouter(Login));

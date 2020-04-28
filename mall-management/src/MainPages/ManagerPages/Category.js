@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import './CommonStyle.css';
 import axios from 'axios';
+import { connect } from 'react-redux';
+
 
 
 
@@ -12,7 +14,7 @@ class Category extends Component {
       
         Category:null,
         Description:null,
-        User_Id:this.props.location.state.User_Id,
+        User_Id:'',
         Info:[],
         isopened:false,
 
@@ -28,7 +30,6 @@ class Category extends Component {
     }
     onSubmit=(e)=>{
         // e.preventDefault();
-        // console.log(this.state);
         axios.post('http://localhost/backend-mall-management/ManagerPage/Category/Category.php',this.state)
         .then(res => console.log(res.data));
 
@@ -55,8 +56,8 @@ class Category extends Component {
     onDelete=(e)=>{
       var Cat_Id=document.getElementById('Cat_Id');
       var Cat1=Cat_Id.value
-      axios.get('http://localhost/backend-mall-management/ManagerPage/Category/DeleteCategory.php?Username='+Cat1)
-      .then(result=>console.log(result))
+      axios.post('http://localhost/backend-mall-management/ManagerPage/Category/DeleteCategory.php?Username='+Cat1)
+      .then(result=>console.log(result.data))
       .catch(function(error){
         console.log(error);
       })
@@ -79,13 +80,13 @@ class Category extends Component {
 
         };
         axios.post('http://localhost/backend-mall-management/ManagerPage/Category/UpdateCategory.php',Jform)
-        .then(res => console.log(res.data));
+        .then(res =>console.log(res.data));
 
     }
 
 
     componentDidMount=()=>{
-      this.setState({isopened:true});
+      this.setState({isopened:true,User_Id:this.props.User_Id});
 
       
     }
@@ -100,7 +101,7 @@ class Category extends Component {
         myArray.push(<tr key={i} onClick={()=> this.setInputBox(Resp[i]) }>
           <td>{Resp[i].Category}</td>
           <td >{Resp[i].Description}</td>
-          <td style={{visibility:'hidden'}}>{Resp[i].Cat_Id}</td>
+          <td >{Resp[i].Cat_Id}</td>
         </tr>)
       
       }
@@ -163,7 +164,7 @@ class Category extends Component {
                   <tr>
                       <th>Category</th>
                       <th>Description</th>
-                      <th style={{visibility:'hidden'}}>Cat_Id</th>
+                      <th >Cat_Id</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -179,4 +180,10 @@ class Category extends Component {
     }
 }
 
-export default Category;
+const mapStateToProps = (state) => {
+  return{
+  User_Id: state.storeId
+  }
+}
+
+export default connect(mapStateToProps)(Category);

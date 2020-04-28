@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import './CommonStyle.css';
 import axios from 'axios';
 
@@ -12,8 +13,10 @@ class Product extends Component {
         Product:null,
         Description:null,
         Price:null,
+        Category:null,
         Products:[],
         Categorys:[],
+        User_Id:this.props.User_Id,
         isopened:false,
 
     }
@@ -24,18 +27,21 @@ class Product extends Component {
         })
     }
     onSubmit=(e)=>{
-        
-        console.log(this.state);
+
+        e.preventDefault();
+      
+      console.log(this.state);
      var Category=document.getElementById('Category').value;
      
 
-        axios.post('http://localhost:8080/backend-mall-management/ManagerPage/Product/Product.php?Category='+Category,this.state)
+        axios.post('http://localhost/backend-mall-management/ManagerPage/Product/Product.php',this.state)
         .then(res => console.log(res.data));
 
         this.setState({
             Product:'',
             Description:'',
-            Price:''
+            Price:'',
+            Category:''
         })
 
         
@@ -60,7 +66,7 @@ class Product extends Component {
     onDelete=(e)=>{
       var Product_Id=document.getElementById('Product_Id');
       var User1=Product_Id.value
-      axios.get('http://localhost:8080/backend-mall-management/AdminPage/Users/DeleteUser.php?Username='+User1)
+      axios.get('http://localhost/backend-mall-management/ManagerPage/Product/DeleteProduct.php?Username='+User1)
       .then(result=>console.log(result))
       .catch(function(error){
         console.log(error);
@@ -88,7 +94,7 @@ class Product extends Component {
           Product_Id:Product_Id.value
 
         };
-        axios.post('http://localhost:8080/backend-mall-management/AdminPage/Users/UpdateUser.php',Jform)
+        axios.post('http://localhost/backend-mall-management/ManagerPage/Product/UpdateProduct.php',Jform)
         .then(res => console.log(res.data));
 
     }
@@ -105,9 +111,10 @@ class Product extends Component {
   componentDidUpdate(){
     let myArray=[];
     let myArray2=[];
-      axios.get('http://localhost:8080/backend-mall-management/AdminPage/Users/UsersList.php')
+      axios.get('http://localhost/backend-mall-management/ManagerPage/Product/ProductList.php?User_Id='+this.state.User_Id)
       .then(response=>{
          Resp=response.data;
+         console.log(Resp);
       for(let i=0;i<Resp.length;i+=1){
         myArray.push(<tr key={i} onClick={()=> this.setInputBox(Resp[i]) }>
           <td>{Resp[i].Category}</td>
@@ -125,9 +132,10 @@ class Product extends Component {
       .catch(function(error){
         console.log(error);
       })
-      axios.get('http://localhost:8080/backend-mall-management/AdminPage/Users/UsersList.php')
+      axios.get('http://localhost/backend-mall-management/ManagerPage/Category/CatogoryList.php')
       .then(response=>{
          Cat_Resp=response.data;
+         console.log(Cat_Resp);
       for(let i=0;i<Cat_Resp.length;i+=1){
         myArray2.push(<datalist id='Category'>
           <option>{Cat_Resp[i].Category}</option>
@@ -231,4 +239,10 @@ class Product extends Component {
     }
 }
 
-export default Product;
+const mapStateToProps = (state) => {
+  return{
+  User_Id: state.storeId
+  }
+}
+
+export default connect(mapStateToProps)(Product);

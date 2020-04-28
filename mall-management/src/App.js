@@ -27,7 +27,7 @@ class App extends Component{
           <Route  exact path='/AdminPage/' component={ShowRoom}/>
           <Route  path='/AdminPage/Users' component={Users}/>
           <Route  path='/AdminPage/Employees' component={MallEmployees}/>
-          <Route  exact path='/ManagerPage/' component={Category}/>
+          <Route  exact path='/ManagerPage' component={Category}/>
           <Route  path='/ManagerPage/Product' component={Product}/>
           <Route  path='/ManagerPage/Employees' component={ShopEmployees}/>
           <Route  path='/ManagerPage/Customers' component={Customers}/>

@@ -1,4 +1,5 @@
 import React,{Component} from 'react';
+import { connect } from 'react-redux';
 import './Common.css';
 import {NavLink, withRouter} from 'react-router-dom';
 import Alogo from '../Images/user1.png';
@@ -6,23 +7,21 @@ import Alogo from '../Images/user1.png';
 
 class Manager extends Component{
 
-    state={
-        Name:this.props.location.state.Name
-    }
-
      Logout=(e)=>{
          e.preventDefault();
         this.props.history.push('/');
         
     }
+componentDidUpdate(){
+    window.location.reload();
 
-
+}
     render(){
         return(
             <div className='main'>
                 <div className='nav'>
                     <h2>Manage Mart</h2>
-        <h2 style={{textTransform:'uppercase'}}>{this.state.Name}</h2>
+        <h2 style={{textTransform:'uppercase'}}>{this.props.Name}</h2>
                     {/* <img src={Alogo} alt="User"></img> */}
                 </div>
                 <div className='menu'>
@@ -36,5 +35,13 @@ class Manager extends Component{
             </div>
         );
         }
+        
 }
-export default withRouter(Manager);
+
+const mapStateToProps = (state) => {
+    return{
+    Name: state.storeValue
+    }
+  }
+
+export default connect(mapStateToProps)(withRouter(Manager));
